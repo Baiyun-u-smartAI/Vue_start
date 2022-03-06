@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="../js/vue.js">
+    
+    </script>
+    <title>事件处理</title>
+</head>
+<!-- 
+    事件的基本使用:
+    1.使用v-on:xxx 或@xxx 绑定事件，其中xxx是事件名;
+    2.事件的回调需要配置在methods对象中，最终会在vm上;
+    3.methods中配置的函数，不要用箭头雨数!否则this就不是vm了;
+    4.methods中配置的函数，都是被Vue所管理的函数，this的指向是vm或组件实例对象;
+    5.@click="demo"和@click="demo($event)"效果一致，但后者可以传参;
+ -->
+<body>
+    <div id="root">
+        <h2>welcome to {{name}}</h2>
+        <button v-on:click="Showinfo">事件标签完整写法</button>
+        <button @click="Showinfo">事件标签简化写法</button>
+        <button @click="Showinfo2($event,666)">事件标签自定义传入参数</button>
+    </div>
+    <script type="text/javascript">
+        Vue.config.productionTip = false
+        const vm = new Vue({
+            el:"#root",
+            data:{
+                name:'test'
+            },
+            methods: {
+                Showinfo(event){
+                    console.log(event) // 这里的event指的是点击的事件
+                    console.log(this) // 这里的this指的是vm
+                    alert("hello")
+                },
+                Showinfo2(event,value){
+                    console.log(event)
+                    alert("传入参数:"+value)
+                }
+            },
+
+
+
+
+            
+        })
+    </script>
+</body>
+</html>
