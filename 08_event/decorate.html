@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="../js/vue.js">
+    </script>
+    <style>
+        *{
+            /* 每个元素顶部留出空位20px */
+            margin-top: 20px; 
+
+        }
+        .headerOfBubbling{
+            height: 50px; /*  让其默认具有高度50px */
+            background-color: skyblue;
+        }
+        .fatherBox{
+            padding: 5px;/*上下左右的内边距5px*/
+            background-color: aquamarine;
+        }
+        .sonBox{
+            padding: 5px;
+            background-color:darksalmon;
+        }
+        .list{
+            width: 200px; /* 让其宽度200px*/
+            height: 200px;
+            background-color: navajowhite;
+            overflow: auto; /* 禁止让子元素从父元素溢出，采用滚动的模式 */
+        }
+        
+        li{
+            height: 100px; /* 每个列表的高度为100px */
+            
+        }
+    </style>
+    <title>事件修饰符</title>
+</head>
+<!-- 
+    Vue中的事件修饰符:
+        1.prevent:阻止默认事件(常用);
+        2.stop:阻止事件冒泡(常用);
+        3.once:事件只触发一次(常用);
+        4.capture:使用事件的捕获模式;
+        5.self:只有event.target是当前操作的元素时才触发事件;
+        6.passive:事件的默认行为立即执行，无需等待事件回调执行完毕(主要用于移动/平板端的部分网页)
+
+
+ -->
+<body>
+    <div id="root">
+        <!-- .prevent修饰符，阻止click事件的默认行为 -->
+        <a href="http://www.baidu.com" @click.prevent="Showinfo">百度一下</a>
+       
+        <!-- 阻止事件冒泡，如果存在多级响应事件，html会冒泡 -->
+        <!-- 在子级上事件加.stop修饰符，可以阻止往父级冒泡 -->
+        <div class="headerOfBubbling" @click="Showinfo">
+            <button @click.stop="Showinfo">点我提示信息</button>
+        </div>
+        <button @click.once="Showinfo">这个按钮click事件智能被触发1次</button>
+
+
+        <!-- 默认的触发顺序是，先后捕获showMsg(1)和showMsg(2)，然后进行冒泡，先后触发showMsg(2)然后是showMsg(1) -->
+        <!-- 在父级添加.capture，它就不等到冒泡阶段开始触发，变成了先触发 -->
+        <div class="fatherBox" @click.capture="showMsg(1)">div1
+            <div class="sonBox" @click="showMsg(2)">
+                div2
+            </div>
+        </div>
+
+        
+
+        <!-- 如果点击了按钮，默认的event.target，会在冒泡时在div跟随先触发的按钮click -->
+        <!-- 如果添加.self修饰符，那么仅在div的click事件时才能触发div的click事件，间接阻止了冒泡触发div -->
+        <div class="headerOfBubbling" @click.self="Showinfo">
+            <button @click="Showinfo">点我提示信息</button>
+        </div>
+
+
+        <!-- 滚动菜单,滚动条位置改变的时候会响应showScroll -->
+        <!-- 滚轮在触发的时候会响应showWheel，再执行默认的滚动事件 -->
+        <!-- 如果加了.passive，就会先执行默认的滚动事件 -->
+        <ul @scroll="showScroll" @wheel.passive="showWheel" class="list">
+            <li>1</li>
+            <li>2</li>
+            <li>3</li>
+            <li>4</li>
+        </ul>
+
+    </div>
+    <script type="text/javascript">
+        Vue.config.productionTip = false
+        const vm=new Vue({
+            el:"#root",
+            data:{
+
+            },
+            methods: {
+                Showinfo(e){
+                    // e.preventDefault(); // 可以用js语句，对event操作，阻止默认的链接跳转事件
+                    // e.stopPropagation();// 阻止事件的冒泡
+                    
+                    alert("并没有")
+                    console.log(e.target)
+                },
+                showMsg(msg){
+                    console.log(msg)// 后台输出接到的信息
+                },
+                showScroll(e){
+                    console.log("@"+e.timeStamp)
+                },
+                showWheel(e){
+
+                    //这个是bug 让滚动条卡；默认逻辑
+                    for (let i = 0; i < 10000; i++) {
+                        console.log("#"+e.timeStamp)
+                        
+                    }
+                    
+                }
+            },
+
+
+
+
+
+        })
+    </script>
+</body>
+</html>
